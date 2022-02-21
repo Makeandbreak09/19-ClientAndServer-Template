@@ -126,6 +126,14 @@ public class InteractionPanelHandlerServer {
         addToSyslog(new java.util.Date().toString() + " - " + pClientIP + ":" + pClientPort +" - " + pMessage);
     }
 
+    /**
+     * Methode wird vom TestServer-Objekt aufgerufen, sobald es einen Fehler beim Starten des Servers gab.
+     * @param pMessage
+     */
+    public void showErrorMessageContent(String pMessage){
+        addToSyslog(new java.util.Date().toString() + " - " + pMessage);
+    }
+
 	/**
      * Methode gibt den Text zurück, der im Message-Textfield steht.
      * @return

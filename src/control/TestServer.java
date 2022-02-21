@@ -18,23 +18,30 @@ public class TestServer extends Server{
         clients = new List<>();
         this.panelHandler = panel;
         //TODO 02 Falls der Server offen ist, werden die Knöpfe im Panel angeschaltet: buttonsSwitch aufrufen. Ansonsten erfolgt eine Ausgabe, dass es ein Problem beim Starten gab.
+        if(isOpen()) {
+            panelHandler.buttonSwitch();
+        }else{
+            panelHandler.showErrorMessageContent("Es gab ein Problem beim Starten des Servers.");
+        }
     }
 
     @Override
     public void processNewConnection(String pClientIP, int pClientPort) {
+        //Es wird ein neuer String in die Liste clients angehängt, welcher aus der ClientIP und dem ClientPort besteht.
         clients.append(pClientIP+":"+pClientPort); //TODO 03a Erläutern Sie, was hier passiert.
         panelHandler.displayNewConnection(pClientIP,pClientPort);
     }
 
     @Override
     public void processMessage(String pClientIP, int pClientPort, String pMessage) {
+        //Es wird der Inhalt der Message von einem Client mit den Daten des Clients ausgegeben.
         panelHandler.showProcessMessageContent(pClientIP,pClientPort,pMessage); //TODO 03b Erläutern Sie, was hier passiert.
     }
 
     @Override
     public void processClosingConnection(String pClientIP, int pClientPort) {
         //TODO 03c Erläutern Sie, was hier passiert.
-
+        //Jeder String in der Liste clients, welcher die IP von den Parametern enthält, wird entfernt.
         clients.toFirst();
         while (clients.hasAccess()){
             if(clients.getContent().toString().contains(pClientIP)){
@@ -63,6 +70,21 @@ public class TestServer extends Server{
      */
     public String[] getClients(){
         //TODO 04 Ein Hoch auf die Standard-Listen/Array-Aufgaben! Bitte umsetzen.
+        int count = 0;
+        clients.toFirst();
+        while (clients.hasAccess()){
+            count++;
+            clients.next();
+        }
+        if(count>0) {
+            String[] o = new String[count];
+            clients.toFirst();
+            for (int i = 0; clients.hasAccess(); i++) {
+                o[i] = clients.getContent().toString();
+            }
+            return o;
+        }
+
         return new String[]{"0000:0000"};
     }
 }

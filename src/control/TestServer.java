@@ -81,6 +81,7 @@ public class TestServer extends Server{
             clients.toFirst();
             for (int i = 0; clients.hasAccess(); i++) {
                 o[i] = clients.getContent().toString();
+                clients.next();
             }
             return o;
         }

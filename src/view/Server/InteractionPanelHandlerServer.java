@@ -5,6 +5,9 @@ import control.TestServer;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 /**
  * Created by Jean-Pierre on 18.09.2017.
@@ -78,6 +81,7 @@ public class InteractionPanelHandlerServer {
      */
     private void openServer(){
         server = new TestServer(Integer.parseInt(port.getText()), this);
+        switchTextFields();
     }
 
 	/**
@@ -86,13 +90,14 @@ public class InteractionPanelHandlerServer {
     private void closeServer(){
         server.close();
         textAreaClients.setText("Kein Client angemeldet.");
+        switchTextFields();
     }
 
     /**
      * Die eingetragene Nachricht wird genau so wie sie eingetragen wird ohne weitere Zusätze an alle Clients versendet.
      */
     private void sendToClients(){
-        server.sendToAll(message.getText());
+        server.sendToAll(LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))+": Server: "+message.getText());
         addToSyslog("sendToAll: "+message.getText());
     }
 
@@ -104,6 +109,14 @@ public class InteractionPanelHandlerServer {
         buttonOpen.setEnabled(!buttonOpen.isEnabled());
         buttonClose.setEnabled(!buttonClose.isEnabled());
         buttonSend.setEnabled(!buttonSend.isEnabled());
+    }
+
+    /**
+     * Der Status der TextFelder wird geändert.
+     * Diese Methode sollte vom TestClient-Objekt aufgerufen werden, sobald sich dieser mit einem Server verbunden oder die Verbindung geschlossen hat.
+     */
+    public void switchTextFields(){
+        port.setEnabled(!port.isEnabled());
     }
 
 	/**

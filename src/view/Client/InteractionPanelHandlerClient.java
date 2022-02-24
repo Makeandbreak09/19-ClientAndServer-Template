@@ -19,10 +19,12 @@ public class InteractionPanelHandlerClient {
     private JTextField message;
     private JButton buttonConnect, buttonDisconnect, buttonSend;
     private JTextArea output;
+    private JTextField name;
 
     public InteractionPanelHandlerClient() {
         createButtons();
 
+        name.setText("General Kenobi");
         serverIP.setText("127.0.0.1");
         serverPort.setText("56789");
         message.setText("Eine Nachricht, die Sie senden können. Kann Befehlswörter enthalten.");
@@ -84,7 +86,8 @@ public class InteractionPanelHandlerClient {
      * Es wird ein Objekt der Klasse TestClient instanziiert.
      */
     private void connect(){
-        client = new TestClient(serverIP.getText(), Integer.parseInt(serverPort.getText()), this);
+        client = new TestClient(serverIP.getText(), Integer.parseInt(serverPort.getText()), name.getText(), this);
+        switchTextFields();
     }
 
 	/**
@@ -92,6 +95,7 @@ public class InteractionPanelHandlerClient {
      */
     private void closeConnection(){
         client.close();
+        switchTextFields();
     }
 
 	/**
@@ -104,6 +108,16 @@ public class InteractionPanelHandlerClient {
     }
 	
 	/**
+     * Der Status der TextFelder wird geändert.
+     * Diese Methode sollte vom TestClient-Objekt aufgerufen werden, sobald sich dieser mit einem Server verbunden oder die Verbindung geschlossen hat.
+     */
+    public void switchTextFields(){
+        serverIP.setEnabled(!serverIP.isEnabled());
+        serverPort.setEnabled(!serverPort.isEnabled());
+        name.setEnabled(!name.isEnabled());
+    }
+
+    /**
      * Der Status der Knöpfe wird geändert.
      * Diese Methode sollte vom TestClient-Objekt aufgerufen werden, sobald sich dieser mit einem Server verbunden oder die Verbindung geschlossen hat.
      */

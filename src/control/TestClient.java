@@ -11,9 +11,10 @@ public class TestClient extends Client{
 
     private InteractionPanelHandlerClient panelHandler;
 
-    public TestClient(String pServerIP, int pServerPort, InteractionPanelHandlerClient panelHandler) {
+    public TestClient(String pServerIP, int pServerPort, String name, InteractionPanelHandlerClient panelHandler) {
         //TODO 01 Es muss eine Verbindung mit dem anvisierten Server erstellt werden. Dazu muss der Super-Konstruktor passend aufgerufen werden.
         super(pServerIP, pServerPort);
+        send("NAME:"+name);
         this.panelHandler = panelHandler;
 
         //TODO 05 Falls eine Verbindung vorhanden ist, müssen die Knöpfe im panelHandler aktiviert werden mit der Methode switchButtons. Ansonsten muss eine Ausgabe erfolgen, die dem Nutzer mitteilt, dass es ein Verbindungsproblem gab und er bitte IP und Port prüft.

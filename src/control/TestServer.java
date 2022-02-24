@@ -3,6 +3,11 @@ package control;
 import model.List;
 import view.Server.InteractionPanelHandlerServer;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 /**Aus Gründen der Vereinfachung gibt es eine "Verzahnung" (gegenseitige Kennt-Beziehung --> Assoziation) zwischen TestServer und InteractionsPanelHandlerServer.
  *  Im fertigen Programm existiert jeweils ein Objekt. Beide Objekte kennen sich gegenseitig.
  * Created by AOS on 18.09.2017.
@@ -11,7 +16,7 @@ import view.Server.InteractionPanelHandlerServer;
 public class TestServer extends Server{
 
     private InteractionPanelHandlerServer panelHandler;
-    private List<String> clients;
+    private List<String[]> clients;
 
     public TestServer(int pPort, InteractionPanelHandlerServer panel) {
         super(pPort);
@@ -28,7 +33,7 @@ public class TestServer extends Server{
     @Override
     public void processNewConnection(String pClientIP, int pClientPort) {
         //Es wird ein neuer String in die Liste clients angehängt, welcher aus der ClientIP und dem ClientPort besteht.
-        clients.append(pClientIP+":"+pClientPort); //TODO 03a Erläutern Sie, was hier passiert.
+        clients.append(new String[]{pClientIP, String.valueOf(pClientPort), ""}); //TODO 03a Erläutern Sie, was hier passiert.
         panelHandler.displayNewConnection(pClientIP,pClientPort);
     }
 
@@ -36,6 +41,30 @@ public class TestServer extends Server{
     public void processMessage(String pClientIP, int pClientPort, String pMessage) {
         //Es wird der Inhalt der Message von einem Client mit den Daten des Clients ausgegeben.
         panelHandler.showProcessMessageContent(pClientIP,pClientPort,pMessage); //TODO 03b Erläutern Sie, was hier passiert.
+        String[] mArray = pMessage.split(":");
+        if(mArray[0].equals("NAME")) {
+            if(!mArray[1].isEmpty()){
+                clients.toFirst();
+                while (clients.hasAccess()){
+                    if(clients.getContent()[0].equals(pClientIP)){
+                        String[] newStringArray = clients.getContent();
+                        newStringArray[2] = mArray[1];
+                        clients.setContent(newStringArray);
+                    }
+                    clients.next();
+                }
+            }
+        }else{
+            clients.toFirst();
+            while (clients.hasAccess() && !clients.getContent()[0].equals(pClientIP)){
+                clients.next();
+            }
+            if(clients.hasAccess() && !clients.getContent()[2].isEmpty()) {
+                sendToAll(LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)) + ": " + clients.getContent()[2] + ": " + pMessage);
+            }else{
+                sendToAll(LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)) + ": " + pClientIP + ": " + pMessage);
+            }
+        }
     }
 
     @Override

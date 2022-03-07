@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
+import static control.TestServer.*;
+
 /**
  * Created by Jean-Pierre on 18.09.2017.
  */
@@ -97,7 +99,7 @@ public class InteractionPanelHandlerServer {
      * Die eingetragene Nachricht wird genau so wie sie eingetragen wird ohne weitere Zusätze an alle Clients versendet.
      */
     private void sendToClients(){
-        server.sendToAll(LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))+": Server: "+message.getText());
+        server.sendToAll(nachricht+ split +LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))+ split +"Server"+ split +message.getText());
         addToSyslog("sendToAll: "+message.getText());
     }
 

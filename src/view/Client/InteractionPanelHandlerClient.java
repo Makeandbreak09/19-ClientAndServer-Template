@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static control.TestServer.nachricht;
+import static control.TestServer.split;
+
 /**
  * Created by Jean-Pierre on 13.09.2017.
  */
@@ -103,7 +106,7 @@ public class InteractionPanelHandlerClient {
      */
     private void send(){
         //TODO 06 Umsetzen!
-        client.send(message.getText());
+        client.send(nachricht+ split +message.getText());
         message.setText("");
     }
 	

@@ -6,8 +6,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static control.TestServer.nachricht;
-import static control.TestServer.split;
+import static control.TestServer.*;
 
 /**
  * Created by Jean-Pierre on 13.09.2017.
@@ -30,7 +29,7 @@ public class InteractionPanelHandlerClient {
         name.setText("General Kenobi");
         serverIP.setText("127.0.0.1");
         serverPort.setText("56789");
-        message.setText("Eine Nachricht, die Sie senden können. Kann Befehlswörter enthalten.");
+        message.setText("Hier können sie Nachrichten senden.");
 
         addToOutput("Willkommen beim Test-Client.");
         addToOutput("Tragen Sie eine IP-Adresse eines Test-Servers samt passenden Port oben ein. Die Nachricht können Sie überarbeiten.");
@@ -90,7 +89,6 @@ public class InteractionPanelHandlerClient {
      */
     private void connect(){
         client = new TestClient(serverIP.getText(), Integer.parseInt(serverPort.getText()), name.getText(), this);
-        switchTextFields();
     }
 
 	/**
@@ -98,14 +96,12 @@ public class InteractionPanelHandlerClient {
      */
     private void closeConnection(){
         client.close();
-        switchTextFields();
     }
 
 	/**
      * An den Server wird die Nachricht geschickt, die sich im TextField message befindet. Diese wird über das TestClient-Objekt client gesendet.
      */
     private void send(){
-        //TODO 06 Umsetzen!
         client.send(nachricht+ split +message.getText());
         message.setText("");
     }

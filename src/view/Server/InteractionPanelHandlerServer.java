@@ -84,6 +84,20 @@ public class InteractionPanelHandlerServer {
     private void openServer(){
         server = new TestServer(Integer.parseInt(port.getText()), this);
         switchTextFields();
+
+        Thread thread = new Thread(){
+            public void run(){
+                do{
+                    updateConnections();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }while((server.isOpen()));
+            }
+        };
+        thread.start();
     }
 
 	/**
@@ -99,8 +113,8 @@ public class InteractionPanelHandlerServer {
      * Die eingetragene Nachricht wird genau so wie sie eingetragen wird ohne weitere Zusätze an alle Clients versendet.
      */
     private void sendToClients(){
-        server.sendToAll(nachricht+ split +LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))+ split +"Server"+ split +message.getText());
-        addToSyslog("sendToAll: "+message.getText());
+        server.sendToAll(nachricht+split+LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))+split+message.getText());
+        addToSyslog(TestServer.getTime() + " - Nachricht an alle: " + message.getText());
     }
 
 	/**
@@ -127,7 +141,7 @@ public class InteractionPanelHandlerServer {
      * @param pClientPort
      */
     public void displayNewConnection(String pClientIP, int pClientPort){
-        addToSyslog(new java.util.Date().toString() + " - " + "Neuer Client hat sich verbunden: " + pClientIP + ":" + pClientPort);
+        addToSyslog(TestServer.getTime() + " - " + "Neuer Client hat sich verbunden: " + pClientIP + ":" + pClientPort);
         updateConnections();
     }
 
@@ -138,7 +152,7 @@ public class InteractionPanelHandlerServer {
      * @param pMessage
      */
     public void showProcessMessageContent(String pClientIP, int pClientPort, String pMessage){
-        addToSyslog(new java.util.Date().toString() + " - " + pClientIP + ":" + pClientPort +" - " + pMessage);
+        addToSyslog(TestServer.getTime() + " - " + pClientIP + ":" + pClientPort +" - " + pMessage);
     }
 
     /**
@@ -146,7 +160,7 @@ public class InteractionPanelHandlerServer {
      * @param pMessage
      */
     public void showErrorMessageContent(String pMessage){
-        addToSyslog(new java.util.Date().toString() + " - " + pMessage);
+        addToSyslog(TestServer.getTime() + " - " + pMessage);
     }
 
 	/**
@@ -163,7 +177,7 @@ public class InteractionPanelHandlerServer {
      * @param pClientPort
      */
     public void displayClosingConnection(String pClientIP, int pClientPort){
-        addToSyslog(new java.util.Date().toString() + " - " + "Client hat sich abgemeldet: " + pClientIP + ":" + pClientPort);
+        addToSyslog(TestServer.getTime() + " - " + "Client hat sich abgemeldet: " + pClientIP + ":" + pClientPort);
         updateConnections();
     }
 

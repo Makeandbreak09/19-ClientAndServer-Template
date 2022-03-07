@@ -49,7 +49,7 @@ public class TestServer extends Server{
         super(pPort);
         clients = new List<>();
         this.panelHandler = panel;
-        //TODO 02 Falls der Server offen ist, werden die Knöpfe im Panel angeschaltet: buttonsSwitch aufrufen. Ansonsten erfolgt eine Ausgabe, dass es ein Problem beim Starten gab.
+
         if(isOpen()) {
             panelHandler.buttonSwitch();
         }else{
@@ -60,7 +60,7 @@ public class TestServer extends Server{
     @Override
     public void processNewConnection(String pClientIP, int pClientPort) {
         //Es wird ein neuer String in die Liste clients angehängt, welcher aus der ClientIP und dem ClientPort besteht.
-        clients.append(new Client(pClientIP, pClientPort)); //TODO 03a Erläutern Sie, was hier passiert.
+        clients.append(new Client(pClientIP, pClientPort));
         panelHandler.displayNewConnection(pClientIP,pClientPort);
 
         send(pClientIP, pClientPort, gibName);
@@ -69,7 +69,7 @@ public class TestServer extends Server{
     @Override
     public void processMessage(String pClientIP, int pClientPort, String pMessage) {
         //Es wird der Inhalt der Message von einem Client mit den Daten des Clients ausgegeben.
-        panelHandler.showProcessMessageContent(pClientIP,pClientPort,pMessage); //TODO 03b Erläutern Sie, was hier passiert.
+        panelHandler.showProcessMessageContent(pClientIP,pClientPort,pMessage);
         String[] mArray = pMessage.split(split);
         if(mArray[0].equals(name)) {
             if(!mArray[1].isEmpty()){
@@ -77,7 +77,7 @@ public class TestServer extends Server{
 
                 clients.toFirst();
                 while (clients.hasAccess()){
-                    if(clients.getContent().name.equals(mArray[1])){
+                    if(clients.getContent().name != null && clients.getContent().name.equals(mArray[1])){
                         nameFrei = false;
                     }
                     clients.next();
@@ -86,7 +86,7 @@ public class TestServer extends Server{
                 if(nameFrei) {
                     clients.toFirst();
                     while (clients.hasAccess()) {
-                        if (clients.getContent().ip.equals(pClientIP)) {
+                        if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
                             clients.getContent().setName(mArray[1]);
                             sendToAll(verbunden+split+getTime()+split+mArray[1]);
                         }
@@ -98,7 +98,7 @@ public class TestServer extends Server{
             }
         }else if(mArray[0].equals(nachricht)){
             clients.toFirst();
-            while (clients.hasAccess() && !clients.getContent().ip.equals(pClientIP)){
+            while (clients.hasAccess() && (!clients.getContent().ip.equals(pClientIP) || clients.getContent().port != pClientPort)){
                 clients.next();
             }
             if(clients.hasAccess() && clients.getContent().name != null) {
@@ -114,7 +114,7 @@ public class TestServer extends Server{
             while (clients.hasAccess()){
                 if(clients.getContent().name.equals(mArray[1])){
                     an = clients.getContent();
-                }else if(clients.getContent().ip.equals(pClientIP)){
+                }else if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort){
                     von = clients.getContent();
                 }
             }
@@ -129,11 +129,10 @@ public class TestServer extends Server{
 
     @Override
     public void processClosingConnection(String pClientIP, int pClientPort) {
-        //TODO 03c Erläutern Sie, was hier passiert.
         //Jeder String in der Liste clients, welcher die IP von den Parametern enthält, wird entfernt.
         clients.toFirst();
         while (clients.hasAccess()){
-            if(clients.getContent().ip.equals(pClientIP)){
+            if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort){
                 sendToAll(getrennt+split+clients.getContent().name);
                 clients.remove();
             }else{
@@ -159,7 +158,6 @@ public class TestServer extends Server{
      * @return String-Array mit Client-Informationen
      */
     public String[] getClients(){
-        //TODO 04 Ein Hoch auf die Standard-Listen/Array-Aufgaben! Bitte umsetzen.
         int count = 0;
         clients.toFirst();
         while (clients.hasAccess()){
@@ -179,7 +177,7 @@ public class TestServer extends Server{
         return new String[]{"0000:0000"};
     }
 
-    private String getTime(){
+    public static String getTime(){
         return LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));
     }
 }

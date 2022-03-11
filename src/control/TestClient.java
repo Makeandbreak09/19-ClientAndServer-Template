@@ -26,6 +26,20 @@ public class TestClient extends Client{
         }else{
             panelHandler.textReceived("Es gab ein Verbindungsproblem! Bitte überprüfen Sie die IP und den Port.");
         }
+
+        Thread thread = new Thread(){
+            public void run(){
+                while(true){
+                    updateComboBox();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
     }
 
     @Override
@@ -54,6 +68,15 @@ public class TestClient extends Client{
             if(!mArray[1].isEmpty() && !mArray[2].isEmpty()){
                 panelHandler.textReceived(mArray[1] + " - " + "Server: " + mArray[2]);
             }
+        }else if(mArray[0].equals(alleClients)){
+            if(mArray.length>1){
+                String[] allClients = new String[mArray.length-1];
+                for(int i = 1; i<mArray.length; i++){
+                    allClients[i-1] = mArray[i];
+                    panelHandler.textReceived(allClients[i-1]);
+                }
+                panelHandler.updateComboBox(allClients);
+            }
         }
     }
 
@@ -62,5 +85,9 @@ public class TestClient extends Client{
         super.close();
         panelHandler.switchButtons();
         panelHandler.switchTextFields();
+    }
+
+    public void updateComboBox(){
+        send(gibclients);
     }
 }

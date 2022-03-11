@@ -22,6 +22,7 @@ public class InteractionPanelHandlerClient {
     private JButton buttonConnect, buttonDisconnect, buttonSend;
     private JTextArea output;
     private JTextField name;
+    private JComboBox selectPersonComboBox;
 
     public InteractionPanelHandlerClient() {
         createButtons();
@@ -132,5 +133,16 @@ public class InteractionPanelHandlerClient {
      */
     public void textReceived(String text){
         addToOutput(text);
+    }
+
+    public void updateComboBox(String[] allClients){
+        selectPersonComboBox.removeAllItems();
+
+        String alle = "Alle";
+        selectPersonComboBox.addItem(alle);
+
+        for(int i = 0; i<allClients.length; i++){
+            selectPersonComboBox.addItem(allClients[i]);
+        }
     }
 }

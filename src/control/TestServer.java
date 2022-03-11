@@ -40,6 +40,8 @@ public class TestServer extends Server{
     public static final String anEinen = "ANEINEN";
     public static final String nichtVerbunden = "NICHTVERBUNDEN";
     public static final String getrennt = "GETRENNT";
+    public static final String gibclients = "GIBCLIENTS";
+    public static final String alleClients = "ALLECLIENTS";
     public static final String split = "§§";
 
     private InteractionPanelHandlerServer panelHandler;
@@ -120,10 +122,12 @@ public class TestServer extends Server{
             }
 
             if(von != null && an != null){
-                send(an.ip, an.port, anEinen+split+von.name+split+mArray[2]);
+                send(an.ip, an.port, anEinen+split+getTime()+split+von.name+split+mArray[2]);
             }else{
                 send(pClientIP, pClientPort, nichtVerbunden);
             }
+        }else if(mArray[0].equals(gibclients)){
+            send(pClientIP, pClientPort, alleClients+split+getClients2());
         }
     }
 
@@ -175,6 +179,20 @@ public class TestServer extends Server{
         }
 
         return new String[]{"0000:0000"};
+    }
+
+    public String getClients2(){
+        if(!clients.isEmpty()) {
+            String o = "";
+            clients.toFirst();
+            while (clients.hasAccess()) {
+                o = o+split+clients.getContent().name;
+                clients.next();
+            }
+            return o;
+        }
+
+        return null;
     }
 
     public static String getTime(){

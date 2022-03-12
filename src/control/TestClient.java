@@ -40,7 +40,18 @@ public class TestClient extends Client{
             if(!mArray[1].isEmpty() && !mArray[2].isEmpty()){
                 panelHandler.textReceived(mArray[2]+" ist dem Chat beigetreten am "+mArray[1]+".");
 
-                allClients.append(mArray[2]);
+                if(!mArray[2].equals(name)) {
+                    allClients.append(mArray[2]);
+                }
+                updateComboBox();
+            }
+        }else if(mArray[0].equals(alleClients)) {
+            if(mArray.length>1){
+                for(int i = 1; i<mArray.length; i++) {
+                    if(!mArray[i].equals(name)) {
+                        allClients.append(mArray[i]);
+                    }
+                }
                 updateComboBox();
             }
         }else if(mArray[0].equals(neuerName)) {
@@ -66,7 +77,7 @@ public class TestClient extends Client{
 
                 allClients.toFirst();
                 while (allClients.hasAccess()) {
-                    if (allClients.getContent().equals(mArray[1])) {
+                    if (allClients.getContent().equals(mArray[2])) {
                         allClients.remove();
                     } else {
                         allClients.next();

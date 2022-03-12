@@ -33,6 +33,7 @@ public class TestServer extends Server{
     public static final String gibName = "GIBNAME";
     public static final String name = "NAME";
     public static final String verbunden = "VERBUNDEN";
+    public static final String alleClients = "ALLECLIENTS";
     public static final String neuerName = "NEUERNAME";
     public static final String nachricht = "NACHRICHT";
     public static final String anAlle = "ANALLE";
@@ -92,6 +93,14 @@ public class TestServer extends Server{
                         }
                         clients.next();
                     }
+
+                    String a = "";
+                    clients.toFirst();
+                    while (clients.hasAccess()){
+                        a = a+split+clients.getContent().name;
+                        clients.next();
+                    }
+                    send(pClientIP, pClientPort, alleClients+a);
                 }else{
                     send(pClientIP, pClientPort, neuerName);
                 }
@@ -137,8 +146,8 @@ public class TestServer extends Server{
         //Jeder String in der Liste clients, welcher die IP von den Parametern enthält, wird entfernt.
         clients.toFirst();
         while (clients.hasAccess()){
-            if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort){
-                sendToAll(getrennt+split+clients.getContent().name);
+            if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort && clients.getContent().name != null){
+                sendToAll(getrennt+split+getTime()+split+clients.getContent().name);
                 clients.remove();
             }else{
                 clients.next();

@@ -40,8 +40,6 @@ public class TestServer extends Server{
     public static final String anEinen = "ANEINEN";
     public static final String nichtVerbunden = "NICHTVERBUNDEN";
     public static final String getrennt = "GETRENNT";
-    public static final String gibclients = "GIBCLIENTS";
-    public static final String alleClients = "ALLECLIENTS";
     public static final String split = "§§";
 
     private InteractionPanelHandlerServer panelHandler;
@@ -109,25 +107,28 @@ public class TestServer extends Server{
                 sendToAll(anAlle + split + getTime() + split + pClientIP + split + mArray[1]);
             }
         }else if(mArray[0].equals(fluester)){
-            Client von = null;
-            Client an = null;
+            if(!mArray[1].isEmpty() && !mArray[2].isEmpty()) {
+                Client von = null;
+                Client an = null;
 
-            clients.toFirst();
-            while (clients.hasAccess()){
-                if(clients.getContent().name.equals(mArray[1])){
-                    an = clients.getContent();
-                }else if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort){
-                    von = clients.getContent();
+                clients.toFirst();
+                while (clients.hasAccess()) {
+                    if (clients.getContent().name.equals(mArray[1])) {
+                        an = clients.getContent();
+                    }
+                    if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
+                        von = clients.getContent();
+                    }
+                    clients.next();
+                }
+
+                if (von != null && an != null) {
+                    send(an.ip, an.port, anEinen + split + getTime() + split + von.name + split + mArray[2]);
+                    send(von.ip, von.port, anEinen + split + getTime() + split + von.name + split + mArray[2]);
+                } else {
+                    send(pClientIP, pClientPort, nichtVerbunden);
                 }
             }
-
-            if(von != null && an != null){
-                send(an.ip, an.port, anEinen+split+getTime()+split+von.name+split+mArray[2]);
-            }else{
-                send(pClientIP, pClientPort, nichtVerbunden);
-            }
-        }else if(mArray[0].equals(gibclients)){
-            send(pClientIP, pClientPort, alleClients+split+getClients2());
         }
     }
 

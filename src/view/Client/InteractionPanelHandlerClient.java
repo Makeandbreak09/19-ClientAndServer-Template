@@ -103,7 +103,12 @@ public class InteractionPanelHandlerClient {
      * An den Server wird die Nachricht geschickt, die sich im TextField message befindet. Diese wird über das TestClient-Objekt client gesendet.
      */
     private void send(){
-        client.send(nachricht+ split +message.getText());
+        if(getSelected().equals("Alle")) {
+            client.send(nachricht + split + message.getText());
+        }else{
+            client.send(fluester + split + getSelected() + split + message.getText());
+        }
+
         message.setText("");
     }
 	
@@ -138,11 +143,12 @@ public class InteractionPanelHandlerClient {
     public void updateComboBox(String[] allClients){
         selectPersonComboBox.removeAllItems();
 
-        String alle = "Alle";
-        selectPersonComboBox.addItem(alle);
-
         for(int i = 0; i<allClients.length; i++){
             selectPersonComboBox.addItem(allClients[i]);
         }
+    }
+
+    public String getSelected(){
+        return selectPersonComboBox.getSelectedItem().toString();
     }
 }

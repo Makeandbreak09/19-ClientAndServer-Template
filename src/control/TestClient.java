@@ -34,56 +34,58 @@ public class TestClient extends Client{
     @Override
     public void processMessage(String pMessage) {
         String[] mArray = pMessage.split(split);
-        if(mArray[0].equals(gibName)) {
-            send(TestServer.name+split+name);
-        }else if(mArray[0].equals(verbunden)) {
-            if(!mArray[1].isEmpty() && !mArray[2].isEmpty()){
-                panelHandler.textReceived(mArray[2]+" ist dem Chat beigetreten am "+mArray[1]+".");
+        if(mArray.length>0) {
+            if (mArray[0].equals(gibName)) {
+                send(TestServer.name + split + name);
+            } else if (mArray[0].equals(verbunden)) {
+                if (mArray.length>2) {
+                    panelHandler.textReceived(mArray[2] + " ist dem Chat beigetreten am " + mArray[1] + ".");
 
-                if(!mArray[2].equals(name)) {
-                    allClients.append(mArray[2]);
-                }
-                updateComboBox();
-            }
-        }else if(mArray[0].equals(alleClients)) {
-            if(mArray.length>1){
-                for(int i = 1; i<mArray.length; i++) {
-                    if(!mArray[i].equals(name)) {
-                        allClients.append(mArray[i]);
+                    if (!mArray[2].equals(name)) {
+                        allClients.append(mArray[2]);
                     }
+                    updateComboBox();
                 }
-                updateComboBox();
-            }
-        }else if(mArray[0].equals(neuerName)) {
-            panelHandler.textReceived("Bitte wähle einen anderen Namen aus.");
-            this.close();
-        }else if(mArray[0].equals(anAlle)) {
-            if(!mArray[1].isEmpty() && !mArray[2].isEmpty() && !mArray[3].isEmpty()){
-                panelHandler.textReceived(mArray[1]+" - "+mArray[2]+": "+mArray[3]);
-            }
-        }else if(mArray[0].equals(anEinen)) {
-            if(!mArray[1].isEmpty() && !mArray[2].isEmpty() && !mArray[3].isEmpty()){
-                panelHandler.textReceived("[Flüstert] "+mArray[1]+" - "+mArray[2]+": "+mArray[3]);
-            }
-        }else if(mArray[0].equals(nichtVerbunden)){
-            panelHandler.textReceived("Niemand mit diesem Namen verbunden.");
-        }else if(mArray[0].equals(nachricht)){
-            if(!mArray[1].isEmpty() && !mArray[2].isEmpty()){
-                panelHandler.textReceived(mArray[1] + " - " + "Server: " + mArray[2]);
-            }
-        }else if(mArray[0].equals(getrennt)){
-            if(!mArray[1].isEmpty()) {
-                panelHandler.textReceived(mArray[2] + " hat den Chat verlassen am " + mArray[1] + ".");
+            } else if (mArray[0].equals(alleClients)) {
+                if (mArray.length>1) {
+                    for (int i = 1; i < mArray.length; i++) {
+                        if (!mArray[i].equals(name)) {
+                            allClients.append(mArray[i]);
+                        }
+                    }
+                    updateComboBox();
+                }
+            } else if (mArray[0].equals(neuerName)) {
+                panelHandler.textReceived("Bitte wähle einen anderen Namen aus.");
+                this.close();
+            } else if (mArray[0].equals(anAlle)) {
+                if (mArray.length>3) {
+                    panelHandler.textReceived(mArray[1] + " - " + mArray[2] + ": " + mArray[3]);
+                }
+            } else if (mArray[0].equals(anEinen)) {
+                if (mArray.length>3) {
+                    panelHandler.textReceived("[Flüstert] " + mArray[1] + " - " + mArray[2] + ": " + mArray[3]);
+                }
+            } else if (mArray[0].equals(nichtVerbunden)) {
+                panelHandler.textReceived("Niemand mit diesem Namen verbunden.");
+            } else if (mArray[0].equals(nachricht)) {
+                if (mArray.length>2) {
+                    panelHandler.textReceived(mArray[1] + " - " + "Server: " + mArray[2]);
+                }
+            } else if (mArray[0].equals(getrennt)) {
+                if (mArray.length>1) {
+                    panelHandler.textReceived(mArray[2] + " hat den Chat verlassen am " + mArray[1] + ".");
 
-                allClients.toFirst();
-                while (allClients.hasAccess()) {
-                    if (allClients.getContent().equals(mArray[2])) {
-                        allClients.remove();
-                    } else {
-                        allClients.next();
+                    allClients.toFirst();
+                    while (allClients.hasAccess()) {
+                        if (allClients.getContent().equals(mArray[2])) {
+                            allClients.remove();
+                        } else {
+                            allClients.next();
+                        }
                     }
+                    updateComboBox();
                 }
-                updateComboBox();
             }
         }
     }

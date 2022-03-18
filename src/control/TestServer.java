@@ -72,70 +72,74 @@ public class TestServer extends Server{
         //Es wird der Inhalt der Message von einem Client mit den Daten des Clients ausgegeben.
         panelHandler.showProcessMessageContent(pClientIP,pClientPort,pMessage);
         String[] mArray = pMessage.split(split);
-        if(mArray[0].equals(name)) {
-            if(!mArray[1].isEmpty()){
-                boolean nameFrei = true;
+        if(mArray.length>0) {
+            if (mArray[0].equals(name)) {
+                if (mArray.length > 1) {
+                    boolean nameFrei = true;
 
-                clients.toFirst();
-                while (clients.hasAccess()){
-                    if(clients.getContent().name != null && clients.getContent().name.equals(mArray[1])){
-                        nameFrei = false;
-                    }
-                    clients.next();
-                }
-
-                if(nameFrei) {
                     clients.toFirst();
                     while (clients.hasAccess()) {
-                        if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
-                            clients.getContent().setName(mArray[1]);
-                            sendToAll(verbunden+split+getTime()+split+mArray[1]);
+                        if (clients.getContent().name != null && clients.getContent().name.equals(mArray[1])) {
+                            nameFrei = false;
                         }
                         clients.next();
                     }
 
-                    String a = "";
+                    if (nameFrei) {
+                        clients.toFirst();
+                        while (clients.hasAccess()) {
+                            if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
+                                clients.getContent().setName(mArray[1]);
+                                sendToAll(verbunden + split + getTime() + split + mArray[1]);
+                            }
+                            clients.next();
+                        }
+
+                        String a = "";
+                        clients.toFirst();
+                        while (clients.hasAccess()) {
+                            a = a + split + clients.getContent().name;
+                            clients.next();
+                        }
+                        send(pClientIP, pClientPort, alleClients + a);
+                    } else {
+                        send(pClientIP, pClientPort, neuerName);
+                    }
+                }
+            } else if (mArray[0].equals(nachricht)) {
+                if (mArray.length > 1) {
                     clients.toFirst();
-                    while (clients.hasAccess()){
-                        a = a+split+clients.getContent().name;
+                    while (clients.hasAccess() && (!clients.getContent().ip.equals(pClientIP) || clients.getContent().port != pClientPort)) {
                         clients.next();
                     }
-                    send(pClientIP, pClientPort, alleClients+a);
-                }else{
-                    send(pClientIP, pClientPort, neuerName);
-                }
-            }
-        }else if(mArray[0].equals(nachricht)){
-            clients.toFirst();
-            while (clients.hasAccess() && (!clients.getContent().ip.equals(pClientIP) || clients.getContent().port != pClientPort)){
-                clients.next();
-            }
-            if(clients.hasAccess() && clients.getContent().name != null) {
-                sendToAll(anAlle + split + getTime() + split + clients.getContent().name + split + mArray[1]);
-            }else{
-                sendToAll(anAlle + split + getTime() + split + pClientIP + split + mArray[1]);
-            }
-        }else if(mArray[0].equals(fluester)){
-            if(!mArray[1].isEmpty() && !mArray[2].isEmpty()) {
-                Client von = null;
-                Client an = null;
-
-                clients.toFirst();
-                while (clients.hasAccess()) {
-                    if (clients.getContent().name.equals(mArray[1])) {
-                        an = clients.getContent();
+                    if (clients.hasAccess() && clients.getContent().name != null) {
+                        sendToAll(anAlle + split + getTime() + split + clients.getContent().name + split + mArray[1]);
+                    } else {
+                        sendToAll(anAlle + split + getTime() + split + pClientIP + split + mArray[1]);
                     }
-                    if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
-                        von = clients.getContent();
-                    }
-                    clients.next();
                 }
+            } else if (mArray[0].equals(fluester)) {
+                if (mArray.length > 2) {
+                    Client von = null;
+                    Client an = null;
 
-                if (von != null && an != null) {
-                    send(an.ip, an.port, anEinen + split + getTime() + split + von.name + split + mArray[2]);
-                    send(von.ip, von.port, anEinen + split + getTime() + split + von.name + split + mArray[2]);
-                } else {
-                    send(pClientIP, pClientPort, nichtVerbunden);
+                    clients.toFirst();
+                    while (clients.hasAccess()) {
+                        if (clients.getContent().name.equals(mArray[1])) {
+                            an = clients.getContent();
+                        }
+                        if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
+                            von = clients.getContent();
+                        }
+                        clients.next();
+                    }
+
+                    if (von != null && an != null) {
+                        send(an.ip, an.port, anEinen + split + getTime() + split + von.name + split + mArray[2]);
+                        send(von.ip, von.port, anEinen + split + getTime() + split + von.name + split + mArray[2]);
+                    } else {
+                        send(pClientIP, pClientPort, nichtVerbunden);
+                    }
                 }
             }
         }
@@ -189,20 +193,6 @@ public class TestServer extends Server{
         }
 
         return new String[]{"0000:0000"};
-    }
-
-    public String getClients2(){
-        if(!clients.isEmpty()) {
-            String o = "";
-            clients.toFirst();
-            while (clients.hasAccess()) {
-                o = o+split+clients.getContent().name;
-                clients.next();
-            }
-            return o;
-        }
-
-        return null;
     }
 
     public static String getTime(){

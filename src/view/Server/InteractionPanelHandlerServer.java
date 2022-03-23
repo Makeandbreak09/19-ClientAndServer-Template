@@ -107,6 +107,7 @@ public class InteractionPanelHandlerServer {
         server.close();
         textAreaClients.setText("Kein Client angemeldet.");
         switchTextFields();
+        clear();
     }
 
     /**
@@ -125,6 +126,10 @@ public class InteractionPanelHandlerServer {
         buttonOpen.setEnabled(!buttonOpen.isEnabled());
         buttonClose.setEnabled(!buttonClose.isEnabled());
         buttonSend.setEnabled(!buttonSend.isEnabled());
+    }
+
+    public void clear(){
+        syslog.setText("");
     }
 
     /**

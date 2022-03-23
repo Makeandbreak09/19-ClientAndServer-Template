@@ -95,6 +95,7 @@ public class TestClient extends Client{
         super.close();
         panelHandler.switchButtons();
         panelHandler.switchTextFields();
+        panelHandler.clear();
     }
 
     private void updateComboBox(){

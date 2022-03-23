@@ -153,6 +153,15 @@ public class InteractionPanelHandlerClient {
         buttonSend.setEnabled(!buttonSend.isEnabled());
     }
 
+    public void clear(){
+        output.setText("");
+        addToOutput("Willkommen beim Test-Client.");
+        addToOutput("Tragen Sie eine IP-Adresse eines Test-Servers samt passenden Port oben ein. Die Nachricht können Sie überarbeiten.");
+        addToOutput("Die Nachricht kann an den Server gesendet werden, der Server kann mit einer beliebingen Antwort antworten.");
+        addToOutput("-----------------------------------------------------------------------------------");
+        selectPersonComboBox.removeAllItems();
+    }
+
 	/**
      * Methode wird vom TestClient-Objekt aufgerufen, sobald dieser eine Nachricht erhalten und gefiltert hat.
      * @param text

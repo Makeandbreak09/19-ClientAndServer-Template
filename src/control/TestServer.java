@@ -88,7 +88,7 @@ public class TestServer extends Server{
                     if (nameFrei) {
                         clients.toFirst();
                         while (clients.hasAccess()) {
-                            if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort) {
+                            if (clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort && clients.getContent().name==null) {
                                 clients.getContent().setName(mArray[1]);
                                 sendToAll(verbunden + split + getTime() + split + mArray[1]);
                             }
@@ -124,7 +124,7 @@ public class TestServer extends Server{
                     Client an = null;
 
                     clients.toFirst();
-                    while (clients.hasAccess()) {
+                    while (clients.hasAccess() && clients.getContent().name!=null) {
                         if (clients.getContent().name.equals(mArray[1])) {
                             an = clients.getContent();
                         }
@@ -152,6 +152,8 @@ public class TestServer extends Server{
         while (clients.hasAccess()){
             if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort && clients.getContent().name != null){
                 sendToAll(getrennt+split+getTime()+split+clients.getContent().name);
+                clients.remove();
+            }else if(clients.getContent().ip.equals(pClientIP) && clients.getContent().port == pClientPort && clients.getContent().name== null){
                 clients.remove();
             }else{
                 clients.next();
